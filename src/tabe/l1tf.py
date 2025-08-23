@@ -188,12 +188,6 @@ class L1TF:
         lhs[-1] += w
         lhs = cholesky_banded(ab=lhs, overwrite_ab=True)
 
-        y = self.y if y is None else y
-        wy = w * y
-        lhs = rho * self.DTD_banded
-        lhs[-1] += w
-        lhs = cholesky_banded(ab=lhs, overwrite_ab=True)
-
         a = self.D.dot(y)
         u = np.zeros_like(a)
 
