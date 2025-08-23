@@ -23,8 +23,8 @@ dependencies = [
   "matplotlib>=3.8.0",
   "numba",
   "numpy>=1.24.1",
-  "prox-tv",
-  "pybaselines",
+  "prox-tv-SDIST==3.3.1",
+  "pybaselines[full]==1.2.1",
   "scipy>=1.11.1",
 ]
 
