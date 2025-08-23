@@ -57,7 +57,10 @@ test = [
 ]
 
 [build-system]
-requires = ["hatchling"]
+requires = [
+  "hatchling",
+  "pycparser",  # added as readthedocs has trouble with installing prox-tv
+]
 build-backend = "hatchling.build"
 
 [tool.coverage]
