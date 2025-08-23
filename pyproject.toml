@@ -46,6 +46,7 @@ docs = [
   "sphinx-design",
   "myst-nb",
   "numpydoc",
+  "pycparser",  # added as readthedocs has trouble with installing prox-tv
   "pydata-sphinx-theme",
 ]
 test = [
