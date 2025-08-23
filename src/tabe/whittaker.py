@@ -160,7 +160,7 @@ class WhittakerSmoother:
         bad_mask = np.logical_not(np.isfinite(y))
         self.bad_mask = np.logical_or(bad_mask, missing)
         self.good_mask = np.logical_not(self.bad_mask)
-        if np.sum(bad_mask) == len(y):
+        if np.sum(self.bad_mask) == len(y):
             raise ValueError('no valid data')
         self.n = len(y)
         self.d = int(d)
@@ -221,9 +221,7 @@ class WhittakerSmoother:
             raise ValueError(
                 f'mask must have shape {self.y.shape}, got {mask.shape}'
             )
-        if not np.any(mask):
-            return None
-        return mask
+        return None if not np.any(mask) else mask
 
     def _inner_fit(
         self,
@@ -463,7 +461,7 @@ class WhittakerSmoother:
 
         if sparse_lam > 0.0 and lam < sparse_lam:
             sparse = True
-            result_sparse = L1TF(self.y, d=self.d).fit(
+            result_sparse = L1TF(self.y, missing=self.bad_mask, d=self.d).fit(
                 lam=lam,
                 w=w,
                 tol=tol,

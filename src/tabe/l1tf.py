@@ -83,7 +83,7 @@ class L1TF:
         bad_mask = np.logical_not(np.isfinite(y))
         self.bad_mask = np.logical_or(bad_mask, missing)
         self.good_mask = np.logical_not(self.bad_mask)
-        if np.sum(bad_mask) == len(y):
+        if np.sum(self.bad_mask) == len(y):
             raise ValueError('no valid data')
         self.n = len(y)
         self.d = int(d)
@@ -143,9 +143,7 @@ class L1TF:
             raise ValueError(
                 f'mask must have shape {self.y.shape}, got {mask.shape}'
             )
-        if not np.any(mask):
-            return None
-        return mask
+        return None if not np.any(mask) else mask
 
     def _inner_fit(
         self,

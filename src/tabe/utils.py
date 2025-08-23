@@ -65,8 +65,7 @@ def create_D(n: int, order: int = 2):
         raise NotImplementedError(f'{order=} is not implemented')
     diagonals = [np.full(m, coeff) for coeff in coeffs]
     offsets = list(range(order + 1))
-    D = diags(diagonals, offsets, shape=(m, n), format='csr')
-    return D
+    return diags(diagonals, offsets, shape=(m, n), format='csr')
 
 
 def create_upper_banded_DTD(n: int, d: int = 2) -> NDArray[np.float64]:
