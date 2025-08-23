@@ -190,6 +190,8 @@ class L1TF:
             )
             D_yhat = np.diff(yhat, self.d)
             a = tv1_1d(D_yhat - u, tf_dp_lam)
+            # from skimage.restoration import denoise_tv_chambolle
+            # a = denoise_tv_chambolle(D_yhat - u, tf_dp_lam)
             u += a - D_yhat
             # tols[i] = relative_difference(yhat_prev, yhat)
             # if tols[i] < tol:
@@ -198,7 +200,6 @@ class L1TF:
             r = y - yhat
             wr2 = np.sum(w * r * r)
             f = wr2 + lam * np.linalg.norm(D_yhat, 1)
-            f = wr2 + lam * np.sum(np.abs(D_yhat))
             loss[i] = f
             if f < f_best:
                 delta_f = f_best - f
