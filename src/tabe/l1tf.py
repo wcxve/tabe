@@ -87,6 +87,10 @@ class L1TF:
             raise ValueError('no valid data')
         self.n = len(y)
         self.d = int(d)
+        if self.n <= self.d:
+            raise ValueError(
+                f'y length ({self.n}) must be greater than d ({self.d})'
+            )
         self.y = self._filter_bad_data(y)
         self.D = create_D(self.n, self.d)
         self.DT = self.D.T
@@ -125,7 +129,10 @@ class L1TF:
                 raise ValueError('weights must be non-negative')
             if not np.any(w > 0.0):
                 raise ValueError('weights must be not all zero')
-        return self._filter_bad_data(w)
+        w = self._filter_bad_data(w)
+        if not np.any(w > 0.0):
+            raise ValueError('weights are all zero after masking bad data')
+        return w
 
     def _check_nit(self, nit: int) -> int:
         """Check the number of iterations."""
@@ -164,8 +171,22 @@ class L1TF:
 
         tf_dp_lam = lam / rho
 
-        if w is None:
-            w = self._default_weights
+        # Validate and apply masking to weights (zeros out bad/missing samples)
+        w = self._check_w(w)
+        # Validate/prepare y
+        if y is None:
+            y = self.y
+        else:
+            y = np.asarray(y, dtype=np.float64)
+            if y.shape != self.y.shape:
+                raise ValueError(
+                    f'y must have shape {self.y.shape}, got {y.shape}'
+                )
+            y = self._filter_bad_data(y)
+        wy = w * y
+        lhs = rho * self.DTD_banded
+        lhs[-1] += w
+        lhs = cholesky_banded(ab=lhs, overwrite_ab=True)
 
         y = self.y if y is None else y
         wy = w * y
