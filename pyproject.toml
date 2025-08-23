@@ -1,0 +1,108 @@
+[project]
+name = "tabe"
+version = "0.0.0"
+description = "Trend and baseline estimator."
+readme = "README.md"
+requires-python = ">=3.10, <=3.13"
+license = "GPL-3.0-or-later"
+authors = [
+  { name = "xuewc", email = "wcxuemail@gmail.com" },
+]
+keywords = ["baseline", "trend"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+dependencies = [
+  "matplotlib>=3.8.0",
+  "numpy>=1.24.1",
+  "scipy>=1.11.1",
+]
+
+[project.urls]
+Documentation = "https://github.com/wcxve/tabe#readme"
+Issues = "https://github.com/wcxve/tabe/issues"
+Source = "https://github.com/wcxve/tabe"
+
+[project.optional-dependencies]
+dev = [
+  "pre-commit>=3.6.0",
+  "ruff>=0.2.0",
+]
+docs = [
+  "sphinx>=7.4.0",
+  "sphinx-autodoc-typehints",
+  "sphinx-codeautolink",
+  "sphinx-copybutton",
+  "sphinx-design",
+  "myst-nb",
+  "numpydoc",
+  "pydata-sphinx-theme",
+]
+test = [
+  "coverage[toml]>=7.8.0",
+  "pytest",
+  "pytest-cov",
+  "pytest-xdist",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.coverage]
+run.parallel = true
+run.source_dirs = ["src"]
+report.exclude_also = [
+  # Have to re-enable the standard pragma
+  "pragma: no cover",
+  # Don't complain about packages we have installed
+  "except ImportError",
+  # Don't complain if tests don't hit defensive assertion code:
+  "raise AssertionError",
+  "raise NotImplementedError",
+  # Don't complain about script hooks
+  "if __name__ == .__main__.:",
+  # typing.TYPE_CHECKING is False at runtime
+  "if TYPE_CHECKING:",
+  # Don't complain about abstract methods' implementations
+  '@(abc\.)?abstractmethod',
+]
+report.show_missing = true
+
+[tool.hatch]
+build.targets.sdist.packages = ["src/tabe"]
+
+[tool.pytest]
+ini_options.addopts = "-n auto --cov --cov-report=xml --junitxml=junit.xml"
+ini_options.testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 79
+target-version = "py310"
+format.quote-style = "single"
+lint.extend-select = ["Q"]
+lint.flake8-quotes.inline-quotes = "single"
+lint.ignore = [
+  "B028",  # allow warnings without stacklevel
+  "C901",  # allow functions with a high complexity
+  "E731",  # allow lambda functions
+]
+lint.isort.known-first-party = ["tabe"]
+lint.isort.combine-as-imports = true
+lint.select = [
+  "E",  # pycodestyle errors
+  "W",  # pycodestyle warnings
+  "F",  # pyflakes
+  "I",  # isort
+  "C",  # flake8-comprehensions
+  "B",  # flake8-bugbear
+  "UP",  # pyupgrade
+]
+# lint.pydocstyle.convention = "numpy"
