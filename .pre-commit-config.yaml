@@ -1,0 +1,25 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: "v6.0.0"
+    hooks:
+      - id: check-json
+      - id: check-symlinks
+      - id: check-toml
+      - id: check-yaml
+        args:
+          - --unsafe
+      - id: end-of-file-fixer  # binary files should be excluded
+      - id: mixed-line-ending  # binary files should be excluded
+        args:
+          - --fix=lf
+      - id: name-tests-test
+        args:
+          - --pytest-test-first
+      - id: trailing-whitespace  # binary files should be excluded
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: "v0.12.9"
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+      - id: ruff-format
