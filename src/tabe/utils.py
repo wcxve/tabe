@@ -194,7 +194,7 @@ def mark_consecutive_negatives(arr: NDArray, n: int) -> NDArray[np.bool_]:
     neg_mask = arr < 0
     window = np.ones(n, dtype=int)
     conv = np.convolve(neg_mask, window, mode='valid')
-    idx = conv == n
+    idx = conv >= n
     result = np.zeros_like(arr, dtype=bool)
     for i in np.where(idx)[0]:
         result[i : i + n] = True
