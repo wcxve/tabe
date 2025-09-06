@@ -27,10 +27,10 @@ if TYPE_CHECKING:
 class InnerFitResult(NamedTuple):
     """Result of the iteratively re-weighted least squares."""
 
-    yhat: NDArray[np.float64]
+    yhat: NDArray
     """Trend of the data."""
 
-    r: NDArray[np.float64]
+    r: NDArray
     """Residuals."""
 
     d: int
@@ -39,14 +39,14 @@ class InnerFitResult(NamedTuple):
     lam: float
     """Smoothing parameter."""
 
-    w: NDArray[np.float64]
+    w: NDArray
     """Weights."""
 
-    pcb: NDArray[np.float64]
+    pcb: NDArray
     """Cholesky factorization of the penalization matrix in banded format."""
 
     @property
-    def diag_H(self) -> NDArray[np.float64]:
+    def diag_H(self) -> NDArray:
         """Diagonal of the hat matrix."""
         return self.w * diag_V_compact(self.pcb)
 
@@ -69,10 +69,10 @@ class InnerFitResult(NamedTuple):
 class FitResult(NamedTuple):
     """Result of the iteratively re-weighted least squares."""
 
-    yhat: NDArray[np.float64]
+    yhat: NDArray
     """Trend of the data."""
 
-    r: NDArray[np.float64]
+    r: NDArray
     """Residuals."""
 
     d: int
@@ -81,23 +81,23 @@ class FitResult(NamedTuple):
     lam: float
     """Smoothing parameter."""
 
-    w: NDArray[np.float64]
+    w: NDArray
     """Weights."""
 
-    # pcb: NDArray[np.float64]
+    # pcb: NDArray
     # """Cholesky factorization of the penalization matrix in banded format."""
 
-    tols: NDArray[np.float64]
+    tols: NDArray
     """Relative differences between the iterations."""
 
     sparse: bool
     """Whether the yhat is obtained from L1 trend filtering."""
 
-    loss: NDArray[np.float64]
+    loss: NDArray
     """Loss function values of each iteration of L1 trend filtering."""
 
     # @property
-    # def diag_H(self) -> NDArray[np.float64]:
+    # def diag_H(self) -> NDArray:
     #     """Diagonal of the hat matrix."""
     #     return self.w * diag_V_compact(self.pcb)
 
@@ -117,7 +117,7 @@ class FitResult(NamedTuple):
     #     return -0.5 * (wrss + penalty + log_det_WP - log_det_P)
 
     # @property
-    # def lnZ_norm(self) -> NDArray[np.float64]:
+    # def lnZ_norm(self) -> NDArray:
     #     """Logarithm of the normalized marginal likelihood."""
     #     mask_pos = self.w > 0.0
     #     n_pos = np.sum(mask_pos)
@@ -143,8 +143,8 @@ class WhittakerSmoother:
 
     def __init__(
         self,
-        y: NDArray[np.float64],
-        missing: NDArray[np.bool_] | None = None,
+        y: NDArray,
+        missing: NDArray | None = None,
         d: int = 2,
     ):
         y = np.array(y, dtype=np.float64)
@@ -171,7 +171,7 @@ class WhittakerSmoother:
         self.default_weights = self._filter_bad_data(np.ones(self.n))
         # self.log_det_DTD = np.sum(np.log(eigvals_banded(self.DTD)[self.d:]))
 
-    def _filter_bad_data(self, a: NDArray[np.float64]) -> NDArray[np.float64]:
+    def _filter_bad_data(self, a: NDArray) -> NDArray:
         """Filter bad data.
 
         Parameters
@@ -189,7 +189,7 @@ class WhittakerSmoother:
         a[self.bad_mask] = 0.0
         return a
 
-    def _check_w(self, w: NDArray[np.float64] | None) -> NDArray[np.float64]:
+    def _check_w(self, w: NDArray | None) -> NDArray:
         """Check the weights and then set the weights of bad data to 0."""
         if w is None:
             w = self.default_weights
@@ -212,7 +212,7 @@ class WhittakerSmoother:
             raise ValueError(f'nit ({nit}) must be non-negative')
         return nit
 
-    def _check_mask(self, mask: NDArray | None) -> NDArray[np.bool_] | None:
+    def _check_mask(self, mask: NDArray | None) -> NDArray | None:
         """Check the mask."""
         if mask is None:
             return None
@@ -226,9 +226,9 @@ class WhittakerSmoother:
     def _inner_fit(
         self,
         lam: float,
-        w: NDArray[np.float64] | None = None,
-        a: NDArray[np.float64] | None = None,
-        y: NDArray[np.float64] | None = None,
+        w: NDArray | None = None,
+        a: NDArray | None = None,
+        y: NDArray | None = None,
     ) -> InnerFitResult:
         if lam <= 0:
             raise ValueError(f'lam ({lam}) must be positive')
@@ -270,7 +270,7 @@ class WhittakerSmoother:
     def fit(
         self,
         lam: float = 1e5,
-        weights: NDArray[np.float64] | None = None,
+        weights: NDArray | None = None,
         weight_type: str = 'tukey',
         scale: float | None = None,
         n_neg: int = 5,
@@ -349,7 +349,7 @@ class WhittakerSmoother:
     def fit_adapt(
         self,
         lam0: float = 1e5,
-        weights: NDArray[np.float64] | None = None,
+        weights: NDArray | None = None,
         weight_type: Literal['tukey', 'huber'] = 'tukey',
         scale: float | None = None,
         n_neg: int = 5,
@@ -410,8 +410,8 @@ class WhittakerSmoother:
             return np.power(10, res.x)
 
         def update_weights(
-            residuals: NDArray[np.float64],
-        ) -> NDArray[np.float64]:
+            residuals: NDArray,
+        ) -> NDArray:
             """Update the weights."""
             sigma = median_absolute_value(residuals[self.good_mask])
             w = weight_fn(r=residuals / sigma, c=c, n_neg=n_neg)

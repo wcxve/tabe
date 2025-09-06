@@ -18,10 +18,10 @@ if TYPE_CHECKING:
 class L1TFResult(NamedTuple):
     """Result of the L1 trend filtering."""
 
-    yhat: NDArray[np.float64]
+    yhat: NDArray
     """Trend of the data."""
 
-    r: NDArray[np.float64]
+    r: NDArray
     """Residuals."""
 
     d: int
@@ -30,7 +30,7 @@ class L1TFResult(NamedTuple):
     lam: float
     """Smoothing parameter."""
 
-    w: NDArray[np.float64]
+    w: NDArray
     """Weights."""
 
     df: int
@@ -39,7 +39,7 @@ class L1TFResult(NamedTuple):
     wr2: float
     """Weighted residual sum of squares."""
 
-    loss: NDArray[np.float64]
+    loss: NDArray
     """Loss function values of each iteration."""
 
     @property

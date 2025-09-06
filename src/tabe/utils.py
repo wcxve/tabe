@@ -10,12 +10,12 @@ if TYPE_CHECKING:
     from numpy.typing import NDArray
 
 
-def anscombe_transform(x: NDArray[np.float64]) -> NDArray[np.float64]:
+def anscombe_transform(x: NDArray) -> NDArray:
     """Anscombe transform."""
     return 2 * np.sqrt(x + 0.375)
 
 
-def inverse_anscombe_transform(y: NDArray[np.float64]) -> NDArray[np.float64]:
+def inverse_anscombe_transform(y: NDArray) -> NDArray:
     """Inverse of the Anscombe transform.
 
     References
@@ -68,7 +68,7 @@ def create_D(n: int, order: int = 2):
     return diags(diagonals, offsets, shape=(m, n), format='csr')
 
 
-def create_upper_banded_DTD(n: int, d: int = 2) -> NDArray[np.float64]:
+def create_upper_banded_DTD(n: int, d: int = 2) -> NDArray:
     """Construct the upper banded matrix of :math:`D^T D`."""
     if d != 2:
         D = create_D(n, d)
@@ -106,7 +106,7 @@ def create_upper_banded_DTD(n: int, d: int = 2) -> NDArray[np.float64]:
 
 
 @njit('float64[::1](float64[:,::1])', fastmath=True)
-def diag_V_compact(C: np.ndarray) -> np.ndarray:
+def diag_V_compact(C: NDArray) -> NDArray:
     """
     Compute diagonal of V = inv(C)' * inv(C) for a banded triangular matrix.
 
@@ -153,9 +153,9 @@ def diag_V_compact(C: np.ndarray) -> np.ndarray:
 
 
 def relative_difference(
-    old: NDArray[np.float64],
-    new: NDArray[np.float64],
-) -> np.float64:
+    old: NDArray,
+    new: NDArray,
+) -> float:
     """Calculates the relative difference, ``(norm(new-old) / norm(old))``.
 
     Parameters
@@ -167,15 +167,15 @@ def relative_difference(
 
     Returns
     -------
-    float64
+    float
         The relative difference between the old and new values.
     """
     numerator = np.linalg.norm(new - old)
     denominator = np.maximum(np.linalg.norm(old), np.finfo(float).eps)
-    return numerator / denominator
+    return float(numerator / denominator)
 
 
-def mark_consecutive_negatives(arr: NDArray, n: int) -> NDArray[np.bool_]:
+def mark_consecutive_negatives(arr: NDArray, n: int) -> NDArray:
     """Mark the `n` consecutive negative values in the array.
 
     Parameters
@@ -202,10 +202,10 @@ def mark_consecutive_negatives(arr: NDArray, n: int) -> NDArray[np.bool_]:
 
 
 def huber_weight(
-    r: NDArray[np.float64],
+    r: NDArray,
     c: float = 1.345,
     n_neg: int = 0,
-) -> NDArray[np.float64]:
+) -> NDArray:
     """Huber weight function.
 
     Parameters
@@ -235,10 +235,10 @@ def huber_weight(
 
 
 def tukey_weight(
-    r: NDArray[np.float64],
+    r: NDArray,
     c: float = 4.685,
     n_neg: int = 0,
-) -> NDArray[np.float64]:
+) -> NDArray:
     """Tukey's weight function.
 
     Parameters
@@ -267,7 +267,7 @@ def tukey_weight(
     return sqrt_w * sqrt_w
 
 
-def median_absolute_value(values: NDArray[np.float64]) -> np.floating:
+def median_absolute_value(values: NDArray) -> np.floating:
     """Median absolute value.
 
     Parameters
