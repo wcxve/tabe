@@ -1,6 +1,5 @@
 [project]
 name = "tabe"
-version = "0.0.0"
 description = "Trend and baseline estimator."
 readme = "README.md"
 requires-python = ">=3.10, <=3.13"
@@ -21,9 +20,13 @@ classifiers = [
 ]
 dependencies = [
   "matplotlib>=3.8.0",
+  "numba>=0.55.0",
   "numpy>=1.24.1",
+  "prox-tv-SDIST==3.3.1",
+  "pybaselines[full]==1.2.1",
   "scipy>=1.11.1",
 ]
+dynamic = ["version"]
 
 [project.urls]
 Documentation = "https://github.com/wcxve/tabe#readme"
@@ -53,7 +56,7 @@ test = [
 ]
 
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 [tool.coverage]
@@ -77,7 +80,9 @@ report.exclude_also = [
 report.show_missing = true
 
 [tool.hatch]
-build.targets.sdist.packages = ["src/tabe"]
+build.targets.sdist.only-include = ["src/tabe"]
+build.targets.wheel.packages = ["src/tabe"]
+version.source = "vcs"
 
 [tool.pytest]
 ini_options.addopts = "-n auto --cov --cov-report=xml --junitxml=junit.xml"
