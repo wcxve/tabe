@@ -127,7 +127,7 @@ jobs:
       id-token: write
     steps:
       - name: Download Source Distribution
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v7
         with:
           name: tabe
           path: dist
